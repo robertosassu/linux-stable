@@ -2545,9 +2545,24 @@ int security_key_getsecurity(struct key *key, char **_buffer)
 
 #ifdef CONFIG_AUDIT
 
-int security_audit_rule_init(u32 field, u32 op, char *rulestr, void **lsmrule)
+/**
+ * security_audit_rule_init() - Allocate and init an LSM audit rule struct
+ * @field: audit action
+ * @op: rule operator
+ * @rulestr: rule context
+ * @lsmrule: receive buffer for audit rule struct
+ * @gfp: GFP flag used for kmalloc
+ *
+ * Allocate and initialize an LSM audit rule structure.
+ *
+ * Return: Return 0 if @lsmrule has been successfully set, -EINVAL in case of
+ *         an invalid rule.
+ */
+int security_audit_rule_init(u32 field, u32 op, char *rulestr, void **lsmrule,
+			     gfp_t gfp)
 {
-	return call_int_hook(audit_rule_init, 0, field, op, rulestr, lsmrule);
+	return call_int_hook(audit_rule_init, 0, field, op, rulestr, lsmrule,
+			     gfp);
 }
 
 int security_audit_rule_known(struct audit_krule *krule)
